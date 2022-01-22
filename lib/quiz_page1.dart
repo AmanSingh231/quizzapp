@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quiz/question_lists.dart';
 
-
 class QuizApp1 extends StatefulWidget {
   const QuizApp1({Key? key}) : super(key: key);
 
@@ -10,13 +9,31 @@ class QuizApp1 extends StatefulWidget {
 }
 
 class _QuizApp1State extends State<QuizApp1> {
-
-
   List<Widget> scoreKeeper = [];
   QuestionLists queList = QuestionLists();
-   int questionNumber = 0;
-   int checkBox = 0;
-   late bool ans ;
+  int checkBox = 0;
+  late bool ans;
+void answersPart( bool buttonPressed){
+  ans = queList.answers();
+  if (ans == buttonPressed && queList.check()== true ) {
+    scoreKeeper.add(
+      const Icon(
+        Icons.check_circle,
+        color: Colors.green,
+      ),
+    );
+  } else if (queList.check()== true) {
+    checkBox++;
+    scoreKeeper.add(
+      const Icon(
+        Icons.cancel,
+        color: Colors.red,
+      ),
+    );
+  }
+  queList.nextQuestion();
+}
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -26,7 +43,7 @@ class _QuizApp1State extends State<QuizApp1> {
           flex: 12,
           child: Center(
             child: Text(
-              queList.questionBank[questionNumber].questions,
+              queList.questions(),
               style: const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
@@ -43,31 +60,7 @@ class _QuizApp1State extends State<QuizApp1> {
             ),
             onPressed: () {
               setState(() {
-
-
-                ans= queList.questionBank[questionNumber].answers;
-                if(ans == true && checkBox<=3){
-                  checkBox++;
-                  scoreKeeper.add(
-                    const Icon(
-                      Icons.check_circle,
-                      color: Colors.green,
-                    ),
-                  );
-                }else if(checkBox<=3){
-                  checkBox++;
-                  scoreKeeper.add(
-                    const Icon(
-                      Icons.cancel,
-                      color: Colors.red,
-                    ),
-                  );
-                }
-                if(questionNumber<=2){
-                  questionNumber++;
-                }
-
-
+                      answersPart(true);
               });
             },
             child: const Text("True"),
@@ -84,25 +77,7 @@ class _QuizApp1State extends State<QuizApp1> {
             ),
             onPressed: () {
               setState(() {
-                ans=queList.questionBank[questionNumber].answers;
-                if(ans == false){
-                  scoreKeeper.add(
-                    const Icon(
-                      Icons.check_circle,
-                      color: Colors.green,
-                    ),
-                  );
-                }else{
-                  scoreKeeper.add(
-                    const Icon(
-                      Icons.cancel,
-                      color: Colors.red,
-                    ),
-                  );
-                }
-                if (questionNumber <= 2) {
-                  questionNumber++;
-                }
+               answersPart(false);
               });
             },
             child: const Text("False"),
